@@ -13,14 +13,18 @@ const msgInput = document.getElementById('msgInput');
 function addMessage(item, opts = {}) {
   const el = document.createElement('div');
   el.className = 'message';
-  if (opts.system) el.classList.add('system');
-  el.innerHTML = opts.system
-    ? `<em>${item}</em>`
-    : `<strong>${escapeHtml(item.user)}:</strong> <span>${escapeHtml(item.text)}</span>
-       <div class="time">${new Date(item.time).toLocaleTimeString()}</div>`;
+  if (opts.system) {
+    el.classList.add('system');
+    el.innerHTML = `<em>${item}</em>`;
+  } else {
+    el.innerHTML = `<strong style="color: ${item.color || '#000'}">${escapeHtml(item.user)}:</strong>
+                    <span>${escapeHtml(item.text)}</span>
+                    <div class="time">${new Date(item.time).toLocaleTimeString()}</div>`;
+  }
   messagesEl.appendChild(el);
   messagesEl.scrollTop = messagesEl.scrollHeight;
 }
+
 
 function escapeHtml(s) {
   return String(s)
