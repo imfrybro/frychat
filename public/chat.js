@@ -51,6 +51,12 @@ socket.on('message', (m) => addMessage(m));
 socket.on('user-joined', (u) => addMessage(`${u.username} joined`, { system: true }));
 socket.on('user-left', (u) => addMessage(`${u.username || 'Someone'} left`, { system: true }));
 
+socket.on('username-taken', (name) => {
+  alert(`The username "${name}" is already taken. Please choose another.`);
+  loginOverlay.style.display = 'block';
+  app.classList.add('hidden');
+});
+
 msgForm.addEventListener('submit', (e) => {
   e.preventDefault();
   const text = msgInput.value;
