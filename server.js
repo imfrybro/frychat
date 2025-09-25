@@ -28,15 +28,26 @@ io.on('connection', (socket) => {
   console.log('connect', socket.id);
 
   socket.on('join', (username) => {
-    if (activeUsernames.has(username)) {
-    socket.emit('username-taken', username);
-    return;
-    }
-    socket.username = username.trim() || anonUsernames.at(Math.random(anonUsernames.length));
+    username = username.trim();
 
+    // If empty, pick a random anonymous username
+    if (!username) {
+      username = anonUsernames[Math.floor(Math.random() * anonUsernames.length)];
+    }
+
+    // Check if username is already taken
+    if (activeUsernames.has(username)) {
+      socket.emit('username-taken', username); // reject the new user
+      return;
+    }
+
+    // Accept the username
+    socket.username = username;
     socket.color = getRandomColor();
-    // send last 50 messages to the joining client
-    socket.emit('history', history.slice(-50));
+    activeUsernames.add(username);
+
+    // Send last 50 messages to the joining client
+    socket.emit('history', history.slice(-100));
     io.emit('user-joined', { id: socket.id, username: socket.username, color: socket.color });
   });
 
