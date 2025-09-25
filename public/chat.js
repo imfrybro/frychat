@@ -31,7 +31,7 @@ function escapeHtml(s) {
 }
 
 joinBtn.onclick = () => {
-  const name = nameInput.value.trim() || 'Shady nigga';
+  const name = nameInput.value.trim() || 'Anonymous';
   loginOverlay.style.display = 'none';
   app.classList.remove('hidden');
   meDiv.textContent = `You: ${name}, you fucker.`;
