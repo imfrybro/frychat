@@ -56,7 +56,7 @@ io.on('connection', (socket) => {
     // basic sanitization: trim and limit length
     const msg = {
       id: Date.now() + Math.floor(Math.random() * 1000),
-      user: socket.username || 'Anonymous',
+      user: socket.username,
       text: text.trim().slice(0, 1000),
       color: socket.color,
       time: new Date().toISOString()
