@@ -14,12 +14,19 @@ app.use(express.static(path.join(__dirname, 'public')));
 // In-memory message history (for demo). Replace with DB for persistence.
 let history = [];
 
+function getRandomColor() {
+  // Generate bright pastel colors
+  const hue = Math.floor(Math.random() * 360);
+  return `hsl(${hue}, 70%, 50%)`;
+}
+
 // Socket.IO connection
 io.on('connection', (socket) => {
   console.log('connect', socket.id);
 
   socket.on('join', (username) => {
     socket.username = username || 'Anonymous';
+    socket.color = getRandomColor();
     // send last 50 messages to the joining client
     socket.emit('history', history.slice(-50));
     io.emit('user-joined', { id: socket.id, username: socket.username });
@@ -32,6 +39,7 @@ io.on('connection', (socket) => {
       id: Date.now() + Math.floor(Math.random() * 1000),
       user: socket.username || 'Anonymous',
       text: text.trim().slice(0, 1000),
+      color: socket.color,
       time: new Date().toISOString()
     };
     history.push(msg);
