@@ -28,11 +28,12 @@ io.on('connection', (socket) => {
   console.log('connect', socket.id);
 
   socket.on('join', (username) => {
-    socket.username = username.trim() || anonUsernames.at(Math.random(anonUsernames.length));
     if (activeUsernames.has(username)) {
-      socket.emit('username-taken', username);
+    socket.emit('username-taken', username);
     return;
-  }
+    }
+    socket.username = username.trim() || anonUsernames.at(Math.random(anonUsernames.length));
+
     socket.color = getRandomColor();
     // send last 50 messages to the joining client
     socket.emit('history', history.slice(-50));
