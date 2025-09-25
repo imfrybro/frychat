@@ -1,0 +1,35 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Simple Chat</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <div id="loginOverlay" class="overlay">
+    <div class="card">
+      <h2>Enter a display name</h2>
+      <input id="nameInput" placeholder="Your name" maxlength="30" />
+      <button id="joinBtn">Join Chat</button>
+    </div>
+  </div>
+
+  <div id="app" class="hidden">
+    <header>
+      <h1>Chatroom</h1>
+      <div id="me"></div>
+    </header>
+
+    <main id="messages"></main>
+
+    <form id="msgForm">
+      <input id="msgInput" autocomplete="off" placeholder="Type a message..." maxlength="1000" />
+      <button>Send</button>
+    </form>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/chat.js"></script>
+</body>
+</html>
