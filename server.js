@@ -13,6 +13,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // In-memory message history (for demo). Replace with DB for persistence.
 let history = [];
+let activeUsernames = new Set();
+let anonUsernames = ["Ronald McDonald", "Jeffery Epstein", "Joseph Biden", "Barack Obama", "John Frychat",
+                     "That's What She Said", "A giant pair of balls", "The Hamburglar", "Yo mama", "Orenthal James Simpson"];
 
 function getRandomColor() {
   // Generate bright pastel colors
@@ -25,11 +28,15 @@ io.on('connection', (socket) => {
   console.log('connect', socket.id);
 
   socket.on('join', (username) => {
-    socket.username = username || 'Anonymous';
+    socket.username = username.trim() || anonUsernames.at(Math.random(anonUsernames.length));
+    if (activeUsernames.has(username)) {
+      socket.emit('username-taken', username);
+    return;
+  }
     socket.color = getRandomColor();
     // send last 50 messages to the joining client
     socket.emit('history', history.slice(-50));
-    io.emit('user-joined', { id: socket.id, username: socket.username });
+    io.emit('user-joined', { id: socket.id, username: socket.username, color: socket.color });
   });
 
   socket.on('message', (text) => {
@@ -48,10 +55,11 @@ io.on('connection', (socket) => {
     io.emit('message', msg); // broadcast to all
   });
 
-  socket.on('disconnect', () => {
-    io.emit('user-left', { id: socket.id, username: socket.username });
-    console.log('disconnect', socket.id);
-  });
+socket.on('disconnect', () => {
+    if (socket.username) activeUsernames.delete(socket.username);
+    io.emit('user-left', { id: socket.id, username: socket.username, color: socket.color });
+});
+
 });
 
 const PORT = process.env.PORT || 3000;
